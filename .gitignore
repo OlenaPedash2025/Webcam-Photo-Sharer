@@ -44,3 +44,9 @@ desktop.ini
 # --- Project specific ---
 *.pdf
 files/*.pdf
+*jpeg
+*jpg
+*png
+*.csv
+*.xlsx
+*.zip
