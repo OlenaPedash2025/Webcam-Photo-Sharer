@@ -1,5 +1,3 @@
-from email.mime import image
-
 import requests
 import wikipedia
 from kivy.app import App
@@ -12,11 +10,16 @@ Builder.load_file("frontend.kv")
 class MainScreen(Screen):
     def search_image(self):
         user_query = self.manager.current_screen.ids.user_query.text
-        print(f"User query: {user_query}")
-        page = wikipedia.page(user_query)
-        print(f"Page title: {page.title}")
-        image_url = page.images[0] if page.images else None
-        return image_url
+        try:
+            page = wikipedia.page(user_query)
+        except wikipedia.exceptions.DisambiguationError as e:
+            print(f"Ambiguous query '{user_query}', picking: {e.options[0]}")
+            page = wikipedia.page(e.options[0])
+        except wikipedia.exceptions.PageError:
+            print(f"Page '{user_query}' not found.")
+            return None
+
+        return page.images[0] if page.images else None
 
     def download_image(self):
         headers = {"User-Agent": "MyKivyApp/1.0 (olena.pedash@edu.dualis-institut.de)"}
